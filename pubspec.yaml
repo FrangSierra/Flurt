@@ -1,0 +1,13 @@
+name: flurt
+version: 0.0.1
+authors:
+- Francisco Garcia Sierra <frangsierra@gmail.com>
+- Pablo Orgaz Carpio <pablo.ocg@gmail.com>
+description: Flux again
+
+environment:
+  sdk: '>=2.0.0-dev <3.0.0'
+
+dev_dependencies:
+  rxdart:
+    git: 'https://github.com/ReactiveX/rxdart.git'
