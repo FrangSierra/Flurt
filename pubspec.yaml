@@ -11,3 +11,5 @@ environment:
 dev_dependencies:
   rxdart:
     git: 'https://github.com/ReactiveX/rxdart.git'
+
+  synchronized: ^1.5.1

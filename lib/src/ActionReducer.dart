@@ -1,4 +1,4 @@
-import 'Action.dart';
+import 'package:flurt/src/Action.dart';
 
 /**
  * Coordinator for stores mutating state. Implementation is automatically generated
