@@ -4,78 +4,60 @@ import 'package:synchronized/synchronized.dart';
 import 'Action.dart';
 
 class Dispatcher {
-  
-  bool verifyThreads;
-  bool dispatching = false;
-  Chain actionReducerLink;
-  Chain interceptorChain;
-  List<Interceptor> interceptors = List();
-  List<ActionReducer> actionReducers = List();
-  Lock dispatcherLock = Lock();
+  bool _dispatching = false;
+  Chain _actionReducerLink;
+  Chain _interceptorChain;
+  List<Interceptor> _interceptors = List();
+  List<ActionReducer> _actionReducers = List();
+  Lock _dispatcherLock = Lock();
 
-  Dispatcher(this.interceptors, this.actionReducers,
-      {bool verifyThreads = false}) {
-    this.verifyThreads = verifyThreads;
-    actionReducerLink = ActionReducerChain(actionReducers);
-    interceptorChain = buildChain();
+  Dispatcher(this._interceptors, this._actionReducers) {
+    _actionReducerLink = ActionReducerChain(_actionReducers);
+    _interceptorChain = buildChain();
   }
 
   Chain buildChain() {
-    return interceptors.fold(actionReducerLink, (chain, interceptor) {
+    return _interceptors.fold(_actionReducerLink, (chain, interceptor) {
       return InterceptorChain(interceptor, chain);
     });
   }
 
   void addActionReducer(ActionReducer actionReducer) {
-    dispatcherLock.synchronized(() async {
-      actionReducers.add(actionReducer);
+    _dispatcherLock.synchronized(() async {
+      _actionReducers.add(actionReducer);
     });
   }
 
   void removeActionReducer(ActionReducer actionReducer) {
-    dispatcherLock.synchronized(() async {
-      actionReducers.remove(actionReducer);
+    _dispatcherLock.synchronized(() async {
+      _actionReducers.remove(actionReducer);
     });
   }
 
   void addInterceptor(Interceptor interceptor) {
-    dispatcherLock.synchronized(() async {
-      interceptors.add(interceptor);
-      interceptorChain = buildChain();
+    _dispatcherLock.synchronized(() async {
+      _interceptors.add(interceptor);
+      _interceptorChain = buildChain();
     });
   }
 
   void removeInterceptor(Interceptor interceptor) {
-    dispatcherLock.synchronized(() async {
-      actionReducers.remove(interceptor);
-      interceptorChain = buildChain();
+    _dispatcherLock.synchronized(() async {
+      _actionReducers.remove(interceptor);
+      _interceptorChain = buildChain();
     });
   }
 
   /**
-   * Post an event that will dispatch the action on the Ui thread
-   * and return immediately.
-   */
-  void dispatchOnUi(Action action) {
-    //onUi { dispatch(action) }
-  }
-
-  /**
-   * Post and event that will dispatch the action on the Ui thread
-   * and block until the dispatch is complete.
+   * Post an event that will dispatch the action and return immediately.
    *
-   * Can't be called from the main thread.
+   * Since Flutter is single threaded and runs an event loop (like Node.js),
+   * you don’t have to worry about thread management or spawning background threads
    */
-  void dispatchOnUiSync(Action action) {
-    //if (verifyThreads) assertNotOnUiThread()
-    //onUiSync { dispatch(action) }
-  }
-
   void dispatch(Action action) {
-    //if (verifyThreads) assertOnUiThread()
-    if (dispatching) throw Exception("Nested dispatch calls");
-    dispatching = true;
-    interceptorChain.proceed(action);
-    dispatching = false;
+    if (_dispatching) throw new Exception("Nested dispatch calls");
+    _dispatching = true;
+    _interceptorChain.proceed(action);
+    _dispatching = false;
   }
 }

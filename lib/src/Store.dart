@@ -4,12 +4,12 @@ typedef StateCallback<S> = void Function(S);
 
 abstract class Store<S extends Object> {
   Map<String, Object> _properties = new Map();
-  List<StoreObserver<S>> observers = new List();
-  PublishSubject<S> processor = new PublishSubject();
-  StateCallback<S> processorObserver;
+  List<StoreObserver<S>> _observers = new List();
+  PublishSubject<S> _processor = new PublishSubject();
+  StateCallback<S> _processorObserver;
 
-  Store(this._properties, this.observers, this.processor) {
-    processorObserver = (S newState) => processor.add(newState);
+  Store(this._properties, this._observers, this._processor) {
+    _processorObserver = (S newState) => _processor.add(newState);
   }
 
   S _state = null;
@@ -24,7 +24,7 @@ abstract class Store<S extends Object> {
   set state(S newState) {
     if (newState != _state) {
       _state = newState;
-      observers.forEach((storeObserver) => storeObserver.onStateChanged(state));
+      _observers.forEach((storeObserver) => storeObserver.onStateChanged(state));
     }
   }
 
@@ -41,12 +41,12 @@ abstract class Store<S extends Object> {
   }
 
   Observable<S> asObservable() {
-    return processor.startWith(state);
+    return _processor.startWith(state);
   }
 
   StoreObserver<S> observe(StateCallback<S> cb) {
     StoreObserver<S> observer = StoreObserver(this, cb);
-    observers.add(observer);
+    _observers.add(observer);
     return observer;
   }
 }
@@ -65,6 +65,6 @@ class StoreObserver<S extends Object> {
   }
 
   void dispose() {
-    store.observers.remove(this);
+    store._observers.remove(this);
   }
 }
