@@ -13,3 +13,4 @@ dev_dependencies:
     git: 'https://github.com/ReactiveX/rxdart.git'
 
   synchronized: ^1.5.1
+  test: 1.0.0

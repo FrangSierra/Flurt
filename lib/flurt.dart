@@ -7,3 +7,5 @@ export 'package:flurt/src/Task.dart';
 export 'package:flurt/src/SubscriptionTracker.dart';
 export 'package:flurt/src/ActionReducer.dart';
 export 'package:flurt/src/Dispatcher.dart';
+export 'package:flurt/src/DynamicActionReducer.dart';
+export 'package:flurt/src/ReducerSubscription.dart';

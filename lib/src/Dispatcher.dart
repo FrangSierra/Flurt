@@ -11,7 +11,7 @@ class Dispatcher {
   List<ActionReducer> _actionReducers = List();
   Lock _dispatcherLock = Lock();
 
-  Dispatcher(this._interceptors, this._actionReducers) {
+  Dispatcher() {
     _actionReducerLink = ActionReducerChain(_actionReducers);
     _interceptorChain = buildChain();
   }
