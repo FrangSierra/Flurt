@@ -24,8 +24,8 @@ abstract class Store<S extends Object> {
   set state(S newState) {
     if (newState != _state) {
       _state = newState;
-      _observers.forEach((storeObserver) =>
-          storeObserver.onStateChanged(state));
+      _observers
+          .forEach((storeObserver) => storeObserver.onStateChanged(state));
     }
   }
 
