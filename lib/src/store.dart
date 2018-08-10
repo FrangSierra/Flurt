@@ -3,12 +3,15 @@ import 'package:rxdart/rxdart.dart';
 typedef StateCallback<S> = void Function(S);
 
 abstract class Store<S extends Object> {
-  Map<String, Object> _properties = new Map();
-  List<StoreObserver<S>> _observers = new List();
-  PublishSubject<S> _processor = new PublishSubject();
+  Map<String, Object> _properties;
+  List<StoreObserver<S>> _observers;
+  PublishSubject<S> _processor;
   StateCallback<S> _processorObserver;
 
-  Store(this._properties, this._observers, this._processor) {
+  Store() {
+    this._properties = new Map();
+    this._observers = new List();
+    this._processor = new PublishSubject();
     _processorObserver = (S newState) => _processor.add(newState);
   }
 

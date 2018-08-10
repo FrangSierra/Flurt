@@ -14,8 +14,13 @@ main() {
     test('Tags are reflected correctly', () async {
       ActionC action = ActionC();
       Set<ClassMirror> mirroreables = action.tags();
-      expect(mirroreables,
-          containsAll([reflectClass(ActionA), reflectClass(ActionB), reflectClass(ActionC)]));
+      expect(
+          mirroreables,
+          containsAll([
+            reflectClass(ActionA),
+            reflectClass(ActionB),
+            reflectClass(ActionC)
+          ]));
     });
   });
 }
